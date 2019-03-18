@@ -1,0 +1,38 @@
+Here are some ideas I want to add to my case study part I solutions:
+
+According to my understanding, the goal of this case study is trying to find out what is happening in potato market by analyzing the potato price and clients’ activity, so that the sellers/traders can make accordingly strategies to decide when to sell the potato and who to buy the potato. Part 2 I think it is important to understand how to improve the data quality and data  acquisition  efficiency through automation development.
+
+The first question is to find the clients with largest stockpile based on market value. By looking through the position data, one row of data actually shows for each day, a client has the position of a certain type of potato and the price of the potato. So for each client, I can calculated the total stockpile by adding market value of different types of potato, and find the one who has the largest stockpile. There are total 87 days, and Client 38 holds the largest stockpile for 84 days, client 27 for 2 days and client 82 for one day.
+
+The second question is to find the most active clients. Initially, I regarded activeness is in terms of storage activity. I evaluate it through three indicators. The first is the total distinct potato types the client holds, which can be calculated as the number of records for each clients every day; the second is the total quantity of stored potato the client holds; the third is the number of days client store potato in the company. By finding the No.1 client in terms of this three indexes, Client 38 is most active in storage. 
+However, I think I also need to consider the activeness from the aspect of trading. In order to give valid result, I assumed any change in quantity of a client and a potato means the client sold or bought the potato. I will use two indexes to evaluate the trading activeness of clients: daily trading frequency and daily total trading volume. Especially, when the daily frequency is same for two clients, I think the one who has higher trading volume is more active, and the trading volume includes short volume and long volume.
+
+The third question is very similar with second one, and I need to find the actively traded potatoes. Here, I also consider the daily total trading volume of a potato and the daily trading frequency. 
+
+The next question tries to find some client activity trend. Specifically, I think it wants me to find how quantity of a client hold a potato change and how the overall clients perform across the time. In terms of the individual client, since the combinations of client ID and product ID are too many, I only show the plots in client level via those indexes in question 2. Based on the volatility and value of those indexes, I was able to cluster the clients’ activity trend into several types. As the aspect of overall clients’ activity, I used the averaged value of former indexes to evaluate, and find there is decrease of average quantity may be caused by more joined clients in August.
+
+The 5th questions wants to find potato price trend. I also plot the price for individual potato price and averaged potato price.
+Any factors to predict the potato price?
+-Non historical data potato
+1.	Delete null value in position data
+2.	Delete product ID with too many missing values
+3.	Calculate average price for each product
+4.	Transfer some factors into ordinal factors and rest of them as dummy variables, and delete null values in ordinal factors
+5.	Linear Regression-summary
+I found there are only around 140 potato in position data, however there are total 300 product ID. So firstly for those potatoes that don’t have any historical data, I use the potato information to help predict the inner value/potential price of the potato. Since most of potatoes show a level of price with certain range, I used the averaged price across time for each potato as dependent variable, and attributes in potato information as dependent variables to build a linear regression in order to see which factors can help predict price of potato without much historical data.  
+-Potato with small beta
+If the potato is in position data, and I want to see if the price of the potato can be influenced by overall market trend. Firstly I calculate beta for each product, and later I set a threshold that for potato has beta smaller than 0.5, I assumed the price is not closely associated with market trend. Here, I did ad-hoc trend analysis for one product, and used LSTM model to predict the price. The result is good and it reflects that historical price data can also help predict price.
+-Potato with large beta
+For those potato, I suggest to look into market price trend and I did time series analysis to predict the price, and the trend of potato can follow the market trend.
+
+Any factors can be used to predict clients’ activity?
+Firstly for all combinations of clientID and potato_ID in the position data 
+-Action the client may take for a potato type: sell(0), buy(1), keep(2)
+I can label each record as an action of the client in these three types, and it is regarded as the response variable. The independent variables include clientID, productID, price daily volatility, day of week, day of month. The model can be used are decision tree/random forest/boosting because they can deal with categorical data well.
+
+-Specify the quantity of a client hold a potato
+The quantity can be regarded as response variable, here we need to use the regression model. For GLM, I would use the Ridge(too many dummy variables), Linear Mixed Model(group by combination of client ID and product ID, add random effects to each group) and regression trees.
+
+Secondly, for those client ID and product ID not in the position data
+-Recommendation System
+I will firstly cluster the potato using factors in potato_info and also cluster the clients using factors in client_info. And for the clients in the same cluster, I assume they are likely to have the similar pattern (industrial type) in the preference of potato and trading.
